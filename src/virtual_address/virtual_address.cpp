@@ -10,17 +10,35 @@ using namespace std;
 
 VirtualAddress VirtualAddress::from_string(int process_id, string address) {
     // TODO: implement me
-    return VirtualAddress(0, 0, 0);
+    //return VirtualAddress(0, 0, 0)
+
+    int page = 0;
+    int offset = 0b111111;
+    for(int i = 0; i < address.size(); ++i){
+        if(i < 10){
+            if(address[i] == '1'){
+                page += pow(2,9-i);
+            }
+        }
+    }
+
+    return VirtualAddress(process_id, page, address + offset)
+
+
 }
 
 
 string VirtualAddress::to_string() const {
     // TODO: implement me
-    return "";
+    //return "";
+
+    return bitset<ADDRESS_BITS>(this->page).to_string()
 }
 
 
 ostream& operator <<(ostream& out, const VirtualAddress& address) {
     // TODO: implement me
-    return out;
+    //return out;
+
+    return (out << "PID " << address.process_id << " @ " << address.to_string() << " [page: " << address.page << "; offset: " << address,offset << "]" );
 }
