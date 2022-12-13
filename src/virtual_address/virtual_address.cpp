@@ -40,5 +40,5 @@ ostream& operator <<(ostream& out, const VirtualAddress& address) {
     // TODO: implement me
     //return out;
 
-    return (out << "PID " << address.process_id << " @ " << address.to_string() << " [page: " << address.page << "; offset: " << address,offset << "]" );
+    return (out << "PID " << address.process_id << " @ " << address.to_string() << " [page: " << address.page << "; offset: " << address.offset << "]" );
 }
