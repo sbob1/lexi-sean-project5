@@ -5,6 +5,7 @@
  */
 
 #include "virtual_address/virtual_address.h"
+#include <math.h>
 
 using namespace std;
 
@@ -22,7 +23,7 @@ VirtualAddress VirtualAddress::from_string(int process_id, string address) {
         }
     }
 
-    return VirtualAddress(process_id, page, address + offset)
+    return VirtualAddress(process_id, page, offset);
 
 
 }
@@ -32,7 +33,7 @@ string VirtualAddress::to_string() const {
     // TODO: implement me
     //return "";
 
-    return bitset<ADDRESS_BITS>(this->page).to_string()
+    return bitset<ADDRESS_BITS>(this->page).to_string();
 }
 
 
