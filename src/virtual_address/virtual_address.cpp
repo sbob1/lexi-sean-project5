@@ -11,19 +11,27 @@ using namespace std;
 
 VirtualAddress VirtualAddress::from_string(int process_id, string address) {
     // TODO: implement me
-    //return VirtualAddress(0, 0, 0)
 
-    int page = 0;
-    int offset = 0b111111;
-    for(int i = 0; i < address.size(); ++i){
-        if(i < 10){
-            if(address[i] == '1'){
-                page += pow(2,9-i);
-            }
+    string page = "";
+    string offset = "";
+
+    int counter = 0;
+
+    while(counter < address.size()){
+        if(counter < 10){
+            page += address[counter];
         }
+        else{
+            offset += address[counter];
+        }
+        counter++;
     }
 
-    return VirtualAddress(process_id, page, offset);
+
+    size_t page_r = bitset<32>(page).to_ulong();
+    size_t offset_r = bitset<32>(offset).to_ulong();
+
+    return VirtualAddress(process_id, page_r, offset_r);
 
 
 }
@@ -33,7 +41,7 @@ string VirtualAddress::to_string() const {
     // TODO: implement me
     //return "";
 
-    return bitset<ADDRESS_BITS>(this->page).to_string();
+    return bitset<10>(this->page).to_string() + bitset<6>(this->offset).to_string();
 }
 
 
