@@ -27,7 +27,7 @@ Process* Process::read_from_input(std::istream& in) {
 
     }
 
-    Process* return_process = new Process(num_bytes, pages);
+    Process* return_process = new Process(bytes_num, pages);
 
     return return_process;
 
