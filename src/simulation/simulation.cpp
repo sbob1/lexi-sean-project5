@@ -17,6 +17,20 @@ Simulation::Simulation(FlagOptions& flags)
 
 void Simulation::run() {
     // TODO: implement me
+    size_t total_frames = 0;
+    while(total_frames < NUM_FRAMES) {
+        free_frames.push_back(total_frames); // push back?
+        total_frames++;
+    }
+    for(auto addr: virtual_addresses) {
+        if(seg) {
+            break;
+        }
+        perform_memory_access(addr);
+    }
+    if(!seg) {
+        print_summary();
+    }
 }
 
 char Simulation::perform_memory_access(const VirtualAddress& virtual_address) {
@@ -26,6 +40,37 @@ char Simulation::perform_memory_access(const VirtualAddress& virtual_address) {
 
 void Simulation::handle_page_fault(Process* process, size_t page) {
     // TODO: implement me
+    //process->page_table.rows[page].loaded_at;
+    //process->page_table.rows[page].last_accessed_at;
+
+    if(free_frames.size() == 0 || process->get_rss() >= flags.max_frames) {
+        size_t page_index;
+
+        switch(flags.strategy) {
+            case ReplacementStrategy::FIFO:
+                page_index = process->page_table.get_oldest_page();
+            case ReplacementStrategy::LRU:
+                page_index = process->page_table.get_least_recently_used_page();
+        }
+
+        //process->page_table.rows[page_index].present = false;
+        //frames.at(process->page_table.rows[page_index].frame).set_page(process, page);
+        process->page_table.rows[page].frame = process->page_table.rows[page_index].frame;
+        process->page_table.rows[page].present = true;
+    }
+    else {
+        size_t current_frame = free_frames.front();
+
+        frames[current_frame].set_page(process, page);
+        process->page_table.rows[page].frame = current_frame;
+        process->page_table.rows[page].present = true;
+
+        free_frames.pop_front();
+    }
+
+    page_faults++;
+    process->page_faults++;
+    std::cout << "\t-> PAGE FAULT\n";
 }
 
 void Simulation::print_summary() {
